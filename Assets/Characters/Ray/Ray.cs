@@ -15,9 +15,10 @@ public class Hand : MonoBehaviour
     [Range(400,1000)]
     public float force;
 
-    #region Pathline
+    public float activationTimer = 2f; //Time To activate the bomb
 
-    LineRenderer line;
+    #region Pathline
+ 
     public Material pathLineMaterial;
 
 
@@ -31,16 +32,15 @@ public class Hand : MonoBehaviour
 
 
     private void Start()
-    {
-        if (!gameObject.GetComponent<LineRenderer>()) line = gameObject.AddComponent<LineRenderer>();
-        _collider = GetComponent<CircleCollider2D>();
-        line.material = pathLineMaterial;
+    {   
+        _collider = GetComponent<CircleCollider2D>(); 
 
     }
-    Vector3 CalculateThrowVector()
+    public Vector3 CalculateThrowVector()
     {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 distance = mousePos - transform.position;
+        Debug.DrawLine(transform.position,-distance.normalized * force,Color.red,0.1f);
         return throwVector = -distance.normalized * force;
          
     }
@@ -48,6 +48,7 @@ public class Hand : MonoBehaviour
     {
          var throwedBomb = Instantiate(currentBomb.gameObject,transform.position,Quaternion.identity);
          throwedBomb.GetComponent<Rigidbody2D>().AddForce(throwVector);
+         throwedBomb.GetComponent<Bomb>().Activate(activationTimer);
     }
 
     private void OnMouseDown()
@@ -56,10 +57,8 @@ public class Hand : MonoBehaviour
         CalculateThrowVector();
         Path.StartVisualizingPath(currentBomb);
     }
-    private void OnMouseDrag()
-    {
-        
-        CalculateThrowVector();
+    public void OnMouseDrag()
+    { 
         Path.VisualizePath(currentBomb,CalculateThrowVector(), steps, pathLineMaterial);
         
     }
@@ -69,6 +68,8 @@ public class Hand : MonoBehaviour
         ThrowBomb();
     }
 
-
+    public void setForce(float force){
+        this.force = force;
+    }
 
 }
