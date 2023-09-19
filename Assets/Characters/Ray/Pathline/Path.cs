@@ -16,7 +16,7 @@ public class Path : MonoBehaviour
 
         Physics2D.simulationMode = SimulationMode2D.Script;
     }
-    public static void VisualizePath(GameObject throwable, Vector3 force, int steps){
+    public static void VisualizePath(GameObject throwable, Vector3 force, int steps, Material lineMaterial){
         clone.transform.position = throwable.transform.position;
         Rigidbody2D cloneRigidbody = clone.GetComponent<Rigidbody2D>();
         cloneRigidbody.velocity = Vector3.zero;
@@ -30,7 +30,12 @@ public class Path : MonoBehaviour
         }
         LineRenderer line = cloneRigidbody.GetComponent<LineRenderer>();
         line.enabled = true;
-        line.positionCount = pathPoints.Count;
+        line.positionCount = pathPoints.Count; 
+        line.startColor = Color.white;
+        line.endColor = Color.red;
+        line.widthMultiplier = 0.15f;
+        line.material = lineMaterial;
+ 
         line.SetPositions(pathPoints.ToArray());
     }
     public static void StopVisualizingPath(GameObject throwable){
