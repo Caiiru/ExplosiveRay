@@ -22,8 +22,7 @@ public class WaveController : MonoBehaviour
         if(instance == null){
             instance = this;
         }
-        else if(instance != this){
-            Debug.Log("Instance Already Exists");
+        else if(instance != this){ 
             Destroy(this);
         }
     }

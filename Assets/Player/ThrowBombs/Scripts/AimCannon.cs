@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum cannonStatus
 {
@@ -12,12 +13,11 @@ public enum cannonStatus
 }
 public class AimCannon : MonoBehaviour
 {
-    public cannonStatus currentStatus = cannonStatus.Idle;
-    public GameObject currentBomb;
-    private Bomb bomb;
+    public cannonStatus currentStatus = cannonStatus.Idle; 
     #region Cannon Settings
     Vector3 throwVector;
     Vector3 mousePos;
+    public Slider slider;
 
     //Layer to raycast interact (simulating 2D)
     public LayerMask projectionLayer;
@@ -29,14 +29,17 @@ public class AimCannon : MonoBehaviour
 
     [Range(10, 50)] public int rotationSpeed = 10;
     public float force;
+    private float minForce = 3;
+    private float maxForce = 20; 
 
     #endregion
 
     [SerializeField] private Projection _projection;
     public Transform targetTransform;
     void Start()
-    {
-        bomb = currentBomb.GetComponent<Bomb>();
+    { 
+        slider.minValue = minForce;
+        slider.maxValue = maxForce;
     }
 
     // Update is called once per frame
@@ -58,10 +61,11 @@ public class AimCannon : MonoBehaviour
         if (currentStatus == cannonStatus.Aiming)
         {
             float newForce = force; 
-            if (force >= 10 && force <= 30)
+            slider.value = force;
+            if (force >= minForce && force <= maxForce)
             {
                 newForce += Input.mouseScrollDelta.y*1.3f; 
-                force = newForce<10?10:newForce>30?30:newForce;
+                force = newForce<minForce?minForce:newForce>maxForce?maxForce:newForce;
             } 
             
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -71,12 +75,12 @@ public class AimCannon : MonoBehaviour
                 Debug.DrawRay(cannonPoint.transform.position, mousePos, Color.red, 0.1f, false);
                 
             }
-            _projection.SimulateTrajectory(bomb, cannonPoint.transform.position, cannonPoint.forward * force);
+            _projection.SimulateTrajectory(PlayerInventory.getInstance().GetCurrentBomb(), cannonPoint.transform.position, cannonPoint.forward * force);
         }
     }
     void ThrowBomb()
     {
-        var throwedBomb = Instantiate(currentBomb, cannonPoint.position, quaternion.identity);
+        var throwedBomb = Instantiate(PlayerInventory.getInstance().GetCurrentBomb(), cannonPoint.position, quaternion.identity);
         throwedBomb.GetComponent<Bomb>().Init(cannonPoint.forward * force, false);
     }
     void CheckStatus()
@@ -121,6 +125,13 @@ public class AimCannon : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public void changeForce(float value){
+        value = value<=minForce?minForce:value;
+        value = value>=maxForce?maxForce:value;
+
+        force = value;
     }
 
 

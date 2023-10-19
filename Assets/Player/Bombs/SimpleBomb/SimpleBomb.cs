@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class SimpleBomb : Bomb
 {
-    [SerializeField][Range(1, 6)] int bombStregth = 3;
+    [SerializeField][Range(1, 3)] int bombDamage = 1;
+    [SerializeField][Range(3, 30)] int bombStregth = 6;
     [SerializeField][Range(1, 6)] int bombRange = 3;
 
     public Collider[] colliders;
@@ -22,7 +23,7 @@ public class SimpleBomb : Bomb
         {
             bombTextIndex = WorldText.instance.createWorldText(Vector3.zero, "2", textFontSize.Small);
         }
-        colliders = new Collider[5];
+        colliders = new Collider[10];
     }
     public override void Update()
     {
@@ -30,7 +31,7 @@ public class SimpleBomb : Bomb
     }
     private void LateUpdate()
     {
-        if (_isActivated)
+        if (_isActivated && !isGhost)
         {
             WorldText.getInstance().UpdateTextsPositions(bombTextIndex, new Vector3(transform.position.x, transform.position.y + 1f));
             WorldText.getInstance().UpdateText(bombTextIndex, _timerUntilExplodes.ToString("F1"));
@@ -40,9 +41,9 @@ public class SimpleBomb : Bomb
     public override void Explode()
     {
 
-       
+
         colliders = Physics.OverlapSphere(transform.position, bombRange);
-        
+
         foreach (Collider obj in colliders)
         {
             if (obj.GetComponent<SimplePirate>() != null)
@@ -51,15 +52,20 @@ public class SimpleBomb : Bomb
                 obj.GetComponent<Rigidbody>().AddForce((
                     obj.transform.position - transform.position).normalized * bombStregth,
                     ForceMode.Impulse);
-                obj.GetComponent<Unit>().TakeDamage(bombStregth);
+                obj.GetComponent<Unit>().TakeDamage(bombDamage, false);
             }
         }
-        WorldText.getInstance().DeleteText(bombTextIndex);
-         base.Explode();
+        if(!isGhost)
+            WorldText.getInstance().DeleteText(bombTextIndex);
+
+        transform.position = new Vector3(0, -50, 0);
+        gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
+        base.Explode();
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmos()
+    {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position,bombRange);
+        Gizmos.DrawWireSphere(transform.position, bombRange);
     }
 }

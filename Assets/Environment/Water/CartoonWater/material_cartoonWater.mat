@@ -53,11 +53,11 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RimpleSlimness: 5.74
-    - _RippleDensity: 6.2
+    - _RippleDensity: 69.62
     - _RippleSpeed: 3.29
     - _WaveSpeed: 0.1
-    - _WaveStregth: 4
+    - _WaveStregth: -0.15
     m_Colors:
-    - _BaseColor: {r: 0.16104485, g: 0.7028581, b: 0.7264151, a: 0}
+    - _BaseColor: {r: 0.020425422, g: 0.24495476, b: 0.254717, a: 0}
     - _RippleColor: {r: 1.0836776, g: 0.6798544, b: 0.67985433, a: 0}
   m_BuildTextureStacks: []

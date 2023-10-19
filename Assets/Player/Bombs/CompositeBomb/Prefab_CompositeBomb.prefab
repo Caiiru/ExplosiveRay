@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6530389326542833724}
   - component: {fileID: 1376457546415237678}
   m_Layer: 0
-  m_Name: SimpleBomb
+  m_Name: BlackholeBomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -101,7 +101,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Radius: 0.15
   m_Center: {x: 0, y: 0, z: 0}
@@ -114,11 +114,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8147727771290187605}
-  - component: {fileID: 6631870539360734710}
+  - component: {fileID: 1785463368397013336}
   - component: {fileID: 4437827137547254884}
-  - component: {fileID: 8437955013366578558}
   m_Layer: 0
-  m_Name: Prefab_SimpleBomb
+  m_Name: Prefab_CompositeBomb
   m_TagString: Bomb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -140,7 +139,7 @@ Transform:
   - {fileID: 6888552837021091641}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6631870539360734710
+--- !u!114 &1785463368397013336
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,17 +148,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 9011431879108117438}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e0b8f2042dad034bba4f4ca3753a2c8, type: 3}
+  m_Script: {fileID: 11500000, guid: 47dac7226faca3f449abe05c95d40a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rb: {fileID: 0}
   _timerUntilExplodes: 4
   _isActivated: 0
-  isGhost: 0
-  bombSprite: {fileID: 21300000, guid: 6f9d18ad8bcaba944805c46438a5131e, type: 3}
-  bombDamage: 1
-  bombStregth: 30
-  bombRange: 3
+  bombSprite: {fileID: 21300000, guid: 47443935b2f7bf346b68ffef30772249, type: 3}
+  range: 5
+  duration: 10
+  isActive: 0
   colliders: []
 --- !u!54 &4437827137547254884
 Rigidbody:
@@ -188,24 +185,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 8
   m_CollisionDetection: 0
---- !u!135 &8437955013366578558
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9011431879108117438}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.74
-  m_Center: {x: 0, y: 0, z: 0}

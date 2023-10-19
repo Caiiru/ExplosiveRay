@@ -55,15 +55,13 @@ public class WorldText : MonoBehaviour
             case textFontSize.Big:
                 textCreated.fontSize = 8;
                 break;
-        }
-        Debug.Log("Pré Create");
+        } 
         textCreated.transform.SetParent(currentCanvas.transform);
         textCreated.text = initialText;
         textCreated.alignment = TextAlignmentOptions.Center;
         textCreated.alignment = TextAlignmentOptions.Midline;
         textCreated.transform.position = pos;
-
-        Debug.Log("Criando texto");
+ 
         for (int i = 0; i < worldTexts.Length; i++)
         {
             if (worldTexts[i] == null)
@@ -120,8 +118,5 @@ public class WorldText : MonoBehaviour
         worldTexts[textIndex] = null;
     }
 
-    public void GetStarted()
-    {
-        Debug.Log("World text acessed");
-    }
+    
 }

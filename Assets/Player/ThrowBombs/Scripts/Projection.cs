@@ -36,7 +36,6 @@ public class Projection : MonoBehaviour
 
     void Start()
     {
-        
         CreatePhysicsScene();
     }
 
@@ -47,11 +46,24 @@ public class Projection : MonoBehaviour
 
         foreach (Transform obj in _obstacleParents)
         {
+            //Tratatamento para cada tipo de 'ghost object'
             var ghostObj = Instantiate(obj.gameObject, obj.transform.position, obj.rotation);
-            if(ghostObj.CompareTag("Player")){
+            if (ghostObj.CompareTag("Player"))
+            {
                 ghostObj.GetComponent<AimCannon>().enabled = false;
                 ghostObj.GetComponent<Projection>().enabled = false;
             }
+            if (ghostObj.CompareTag("Enemy"))
+            {
+                ghostObj.tag = "Ghost Enemy";
+                ghostObj.GetComponent<Rigidbody>().freezeRotation = true;
+            }
+            else
+                ghostObj.tag = "Ghost";
+
+            //Transformar ele em ghost: mudar o nome e a tag (mudar a tag para não dar conflito com as outras classes que puxam alguma informação por tag!
+
+            ghostObj.name = "Ghost " + ghostObj.name;
             if (ghostObj.transform.childCount != 0)
             {
                 foreach (Transform childs in ghostObj.transform)
@@ -84,26 +96,29 @@ public class Projection : MonoBehaviour
 
 
     public void SimulateTrajectory(Bomb bomb, Vector3 pos, Vector3 velocity)
-    { 
+    {
         var ghostObj = Instantiate(bomb, pos, Quaternion.identity);
-        for(int i =0; i<ghostObj.transform.childCount;i++){
+        for (int i = 0; i < ghostObj.transform.childCount; i++)
+        {
             var ghostChild = ghostObj.transform.GetChild(i);
-            if(ghostChild.GetComponent<MeshRenderer>()!=null)
-                ghostChild.GetComponent<MeshRenderer>().enabled=false;
-        } 
+            if (ghostChild.GetComponent<MeshRenderer>() != null)
+                ghostChild.GetComponent<MeshRenderer>().enabled = false;
+        }
         SceneManager.MoveGameObjectToScene(ghostObj.gameObject, _simulationScene);
 
-        ghostObj.Init(velocity,true);
+        ghostObj.Init(velocity, true);
+        ghostObj.isGhost=true;
 
         line.positionCount = _maxPhysicsFrameIterations;
         line.SetPosition(0, pos);
         for (int i = 1; i < _maxPhysicsFrameIterations; i++)
-        {
+        { 
             _physicsScene.Simulate(Time.fixedDeltaTime);
             line.SetPosition(i, ghostObj.transform.position);
         }
 
         Destroy(ghostObj.gameObject);
+        //ghostObj.transform.position = line.GetPosition(line.positionCount-1);
     }
 
 }

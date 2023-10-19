@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6530389326542833724}
   - component: {fileID: 1376457546415237678}
   m_Layer: 0
-  m_Name: SimpleBomb
+  m_Name: BlackholeBomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91,7 +91,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7673033559349131937}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 05872af0045f9db4ea35598d227c1862, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -114,12 +114,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8147727771290187605}
-  - component: {fileID: 6631870539360734710}
+  - component: {fileID: 1785463368397013336}
   - component: {fileID: 4437827137547254884}
-  - component: {fileID: 8437955013366578558}
+  - component: {fileID: 2390277154218275251}
   m_Layer: 0
-  m_Name: Prefab_SimpleBomb
-  m_TagString: Bomb
+  m_Name: Prefab_BlackholeBomb
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -140,7 +140,7 @@ Transform:
   - {fileID: 6888552837021091641}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6631870539360734710
+--- !u!114 &1785463368397013336
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,17 +149,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 9011431879108117438}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e0b8f2042dad034bba4f4ca3753a2c8, type: 3}
+  m_Script: {fileID: 11500000, guid: 47dac7226faca3f449abe05c95d40a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rb: {fileID: 0}
   _timerUntilExplodes: 4
   _isActivated: 0
-  isGhost: 0
-  bombSprite: {fileID: 21300000, guid: 6f9d18ad8bcaba944805c46438a5131e, type: 3}
-  bombDamage: 1
-  bombStregth: 30
-  bombRange: 3
+  bombSprite: {fileID: 21300000, guid: 93b6588093a6d9f47b68afe76e91521b, type: 3}
+  range: 5
+  duration: 10
+  bombStregth: 0
+  isActive: 0
   colliders: []
 --- !u!54 &4437827137547254884
 Rigidbody:
@@ -171,7 +170,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -188,14 +187,14 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 8
   m_CollisionDetection: 0
---- !u!135 &8437955013366578558
+--- !u!135 &2390277154218275251
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9011431879108117438}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 05872af0045f9db4ea35598d227c1862, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

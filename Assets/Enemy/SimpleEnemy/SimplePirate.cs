@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class SimplePirate : Unit
 {
-    public override void Start()
+    public override void Awake()
     {
-        base.Start();
+        base.Awake();
     }
-    public override bool TakeDamage(int damage)
+    public override bool TakeDamage(int damage, bool isGhost)
     {
-        return base.TakeDamage(damage);
+        return base.TakeDamage(damage,isGhost);
     }
 
+    private void OnCollisionEnter(Collision other) {
+        if(other.transform.name == "Earth"){
+            TakeDamage(99,false);
+        }
+    }
 }
