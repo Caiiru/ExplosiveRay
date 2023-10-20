@@ -54,7 +54,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 91a0c8dbd1a125f4093c6253dc21b50d, type: 2}
+  - {fileID: 2100000, guid: 3ba5c41ddb4c3424ba02281c97462ed0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -157,15 +157,16 @@ MonoBehaviour:
   _isActivated: 0
   isGhost: 0
   isOnContact: 0
+  vfx: {fileID: 4254476033548563341, guid: e9f916197e65be0448db5981c99e1522, type: 3}
   bombSprite: {fileID: 21300000, guid: 93b6588093a6d9f47b68afe76e91521b, type: 3}
   radius: 4
   duration: 15
-  bombStregth: 5
+  bombStregth: 11
   isActive: 0
   colliders: []
   bombLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   currentScene:
     m_Handle: 0
   textIndex: 0

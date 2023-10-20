@@ -157,6 +157,7 @@ MonoBehaviour:
   _isActivated: 0
   isGhost: 0
   isOnContact: 0
+  vfx: {fileID: 0}
   bombSprite: {fileID: 21300000, guid: 47443935b2f7bf346b68ffef30772249, type: 3}
   expansionNumber: 3
   timeToSecondExplosion: 1
@@ -164,6 +165,8 @@ MonoBehaviour:
   range: 2.33
   bombStregth: 64.3
   bombDamage: 1
+  vfxExplosion: {fileID: 4254476033548563341, guid: 03306e484b9c5674faf8406367b16372, type: 3}
+  vfxLittles: {fileID: 4254476033548563341, guid: b0b3ff1414192864db52fca6c6959b36, type: 3}
 --- !u!54 &4437827137547254884
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ public abstract class Bomb : MonoBehaviour
     public bool isGhost = false;
     public bool isOnContact = false;
 
+    public GameObject vfx;
+
     public Sprite bombSprite;
     public virtual void Init(Vector3 velocity, bool isSimulated, int InitialTimer)
     {
@@ -27,7 +29,13 @@ public abstract class Bomb : MonoBehaviour
     public virtual void Explode()
     {
         _isActivated=false;
-        print("Explosion");
+        //var vfx = Instantiate(explosionVFX,transform.position,Quaternion.identity);
+        vfx.SetActive(true);
+        vfx.transform.position = transform.position;
+        for (int i = 0; i < vfx.transform.childCount; i++)
+        {
+            vfx.transform.GetChild(i).GetComponent<ParticleSystem>().Play();
+        }
     }
     public virtual void Update()
     {

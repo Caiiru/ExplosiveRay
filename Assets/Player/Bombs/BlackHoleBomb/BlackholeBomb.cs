@@ -7,7 +7,7 @@ public class BlackholeBomb : Bomb
 {
     public int radius = 5;
     public float duration = 10;
-    [Range(0.1f, 5f)] public float bombStregth;
+    public float bombStregth;
     public bool isActive = false;
     public Collider[] colliders;
     [SerializeField] LayerMask bombLayer;
@@ -20,6 +20,7 @@ public class BlackholeBomb : Bomb
         _rb = GetComponent<Rigidbody>();
         _rb.velocity = Vector3.zero;
         _rb.useGravity = false;
+        var VfxObj = Instantiate(vfx, transform.position, Quaternion.identity);
 
         GetComponent<SphereCollider>().enabled = false;
 
@@ -43,8 +44,7 @@ public class BlackholeBomb : Bomb
     }
     public override void Init(Vector3 velocity, bool isSimulated, int InitialTimer)
     {
-        base.Init(velocity, isSimulated, InitialTimer);
-        bombLayer = LayerMask.NameToLayer("BombLayer");
+        base.Init(velocity, isSimulated, InitialTimer); 
         if (isSimulated == false)
             textIndex = WorldText.getInstance().createWorldText(transform.position, _timerUntilExplodes.ToString("F1"), textFontSize.Small);
 
@@ -54,9 +54,9 @@ public class BlackholeBomb : Bomb
         if (_isActivated)
         {
             if (isOnContact)
-                WorldText.getInstance().UpdateText(textIndex, "!!",transform.position);
+                WorldText.getInstance().UpdateText(textIndex, "!!", transform.position);
             else
-                WorldText.getInstance().UpdateText(textIndex, _timerUntilExplodes.ToString("F1"),transform.position);
+                WorldText.getInstance().UpdateText(textIndex, _timerUntilExplodes.ToString("F1"), transform.position);
         }
         if (isActive)
         {
@@ -69,16 +69,16 @@ public class BlackholeBomb : Bomb
                 {
                     Vector3 forceToAdd = (transform.position - obj.transform.position) * bombStregth;
 
-                    if (obj.CompareTag("Enemy") || obj.CompareTag("Bomb") && obj != this)
+                    /* if (obj.CompareTag("Enemy") || obj.CompareTag("Bomb") && obj != this)
                     {
-                        obj.transform.position += (this.transform.position - obj.transform.position) * bombStregth / 2;
+                        obj.transform.position += (this.transform.position - obj.transform.position) * bombStregth;
                     }
-                    Debug.Log(obj.gameObject.name);
-                    if (obj.CompareTag("Bomb"))
+                    Debug.Log(obj.gameObject.name); */
+                     if (obj.CompareTag("Bomb") || obj.CompareTag("Enemy"))
                     {
                         //obj.GetComponent<Bomb>().AddForce(forceToAdd, this.gameObject.name);
                         obj.GetComponent<Rigidbody>().AddForce(forceToAdd, ForceMode.Acceleration);
-                    }
+                    } 
 
                 }
                 duration -= 1 * Time.deltaTime;

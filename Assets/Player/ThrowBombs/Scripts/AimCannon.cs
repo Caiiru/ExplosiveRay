@@ -38,6 +38,7 @@ public class AimCannon : MonoBehaviour
 
     #endregion
     private Projection _projection;
+    public GameObject explosionVFX;
     void Start()
     {
         slider.minValue = minForce;
@@ -49,6 +50,7 @@ public class AimCannon : MonoBehaviour
             possibleTimers[i] = i;
         }
         UiManager.getInstance().changeCurrentTimer(possibleTimers[currentTimerIndex]);
+        explosionVFX.SetActive(false);
     }
 
     // Update is called once per frame
@@ -81,7 +83,7 @@ public class AimCannon : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hitinfo, float.MaxValue, projectionLayer))
             {
                 mousePos = new Vector3(hitinfo.point.x, hitinfo.point.y, 0);
-                Debug.DrawRay(cannonPoint.transform.position, mousePos, Color.red, 0.1f, false);
+                explosionVFX.transform.position = cannonPoint.transform.position;
 
             }
             _projection.SimulateTrajectory(PlayerInventory.getInstance().GetCurrentBomb(), cannonPoint.transform.position, cannonPoint.forward * force, 2);
@@ -91,6 +93,15 @@ public class AimCannon : MonoBehaviour
     {
         var throwedBomb = Instantiate(PlayerInventory.getInstance().GetCurrentBomb(), cannonPoint.position, quaternion.identity);
         throwedBomb.GetComponent<Bomb>().Init(cannonPoint.forward * force, false, possibleTimers[currentTimerIndex]);
+        
+        explosionVFX.SetActive(true);
+
+        for (int i = 0; i < explosionVFX.transform.childCount; i++)
+        {
+            explosionVFX.transform.GetChild(i).GetComponent<ParticleSystem>().Play();
+        }
+        //explosionVFX.SetActive(false);
+
     }
     void CheckStatus()
     {
@@ -113,12 +124,12 @@ public class AimCannon : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            currentTimerIndex = currentTimerIndex + 1 > possibleTimers[possibleTimers[possibleTimers.Length-1]] ? possibleTimers[0] : currentTimerIndex + 1;
+            currentTimerIndex = currentTimerIndex + 1 > possibleTimers[possibleTimers[possibleTimers.Length - 1]] ? possibleTimers[0] : currentTimerIndex + 1;
             UiManager.getInstance().changeCurrentTimer(possibleTimers[currentTimerIndex]);
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            currentTimerIndex = currentTimerIndex - 1 < possibleTimers[0] ? possibleTimers[possibleTimers[possibleTimers.Length-1]] : currentTimerIndex - 1;
+            currentTimerIndex = currentTimerIndex - 1 < possibleTimers[0] ? possibleTimers[possibleTimers[possibleTimers.Length - 1]] : currentTimerIndex - 1;
             UiManager.getInstance().changeCurrentTimer(possibleTimers[currentTimerIndex]);
         }
     }

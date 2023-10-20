@@ -47,9 +47,9 @@ public class SimpleBomb : Bomb
     }
 
     public override void Explode()
-    {
-
-
+    {   
+        var VfxObj = Instantiate(vfx,transform.position,Quaternion.identity);
+        base.Explode();
         colliders = Physics.OverlapSphere(transform.position, bombRange);
 
         foreach (Collider obj in colliders)
@@ -68,7 +68,6 @@ public class SimpleBomb : Bomb
 
         transform.position = new Vector3(0, -50, 0);
         gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
-        base.Explode();
     }
 
     private void OnDrawGizmos()

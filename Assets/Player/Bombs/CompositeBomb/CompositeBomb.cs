@@ -12,8 +12,11 @@ public class CompositeBomb : Bomb
     public float bombStregth;
     public int bombDamage = 1;
     int bombTextIndex;
+    public GameObject vfxExplosion;
+    public GameObject vfxLittles;
     public override void Init(Vector3 velocity, bool isSimulated, int InitialTimer)
     {
+        vfx = vfxExplosion;
         base.Init(velocity, isSimulated, InitialTimer);
         if (isSimulated == false)
         {
@@ -48,6 +51,7 @@ public class CompositeBomb : Bomb
     public override void Explode()
     {
         base.Explode();
+        var VfxObj = Instantiate(vfxExplosion, transform.position, Quaternion.identity);
         for (int i = 0; i < expansionNumber; i++)
         {
             var little = Instantiate(this.gameObject, transform.position, Quaternion.identity);
@@ -64,8 +68,10 @@ public class CompositeBomb : Bomb
         Collider[] colliders = Physics.OverlapSphere(transform.position, range);
         foreach (Collider obj in colliders)
         {
+            var VfxObj = Instantiate(vfxLittles, transform.position, Quaternion.identity);
             if (obj.GetComponent<SimplePirate>() != null)
             {
+
                 obj.GetComponent<Rigidbody>().AddForce((
                     obj.transform.position - transform.position).normalized * bombStregth,
                     ForceMode.Impulse);
