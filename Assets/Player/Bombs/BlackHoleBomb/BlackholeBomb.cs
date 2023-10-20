@@ -5,12 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class BlackholeBomb : Bomb
 {
-    public int range = 5;
+    public int radius = 5;
     public float duration = 10;
-    [Range(0.1f,1f)] public float bombStregth;
+    [Range(0.1f, 1f)] public float bombStregth;
     public bool isActive = false;
     public Collider[] colliders;
     [SerializeField] LayerMask bombLayer;
+    public Scene currentScene;
     public override void Explode()
     {
         isActive = true;
@@ -18,7 +19,9 @@ public class BlackholeBomb : Bomb
         _rb.velocity = Vector3.zero;
         _rb.useGravity = false;
 
-        GetComponent<SphereCollider>().enabled=false;
+        GetComponent<SphereCollider>().enabled = false;
+
+        //NBombSimulation.Instance.CreateBlackholeBomb();
 
         var simulationScene = SceneManager.GetSceneByName("Simulation");
         var ghostBomb = Instantiate(this.gameObject);
@@ -29,15 +32,15 @@ public class BlackholeBomb : Bomb
         }
         var ghostBlackHole = ghostBomb.GetComponent<BlackholeBomb>();
         ghostBlackHole.duration = duration;
-        ghostBlackHole.isActive=true;
-        ghostBlackHole._isActivated=false;
+        ghostBlackHole.isActive = true;
+        ghostBlackHole._isActivated = false;
         SceneManager.MoveGameObjectToScene(ghostBomb, simulationScene);
         base.Explode();
     }
     public override void Init(Vector3 velocity, bool isSimulated)
     {
         base.Init(velocity, isSimulated);
-        bombLayer = LayerMask.NameToLayer("BombLayer"); 
+        bombLayer = LayerMask.NameToLayer("BombLayer");
     }
     public override void Update()
     {
@@ -45,7 +48,8 @@ public class BlackholeBomb : Bomb
         {
             if (duration >= 0)
             {
-                colliders = Physics.OverlapSphere(transform.position, range);
+                currentScene = gameObject.scene;
+                colliders = Physics.OverlapSphere(transform.position, radius, bombLayer);
                 foreach (Collider obj in colliders)
                 {
                     Vector3 forceToAdd = (transform.position - obj.transform.position) * bombStregth;
@@ -55,8 +59,11 @@ public class BlackholeBomb : Bomb
                         obj.transform.position += (this.transform.position - obj.transform.position) * bombStregth;
                     }
                     */
-                    if(obj.CompareTag("Bomb")){
-                        obj.GetComponent<Bomb>().AddForce(forceToAdd, this.gameObject.name);
+                    Debug.Log(obj.gameObject.name);
+                    if (obj.CompareTag("Bomb"))
+                    {
+                        //obj.GetComponent<Bomb>().AddForce(forceToAdd, this.gameObject.name);
+                        obj.GetComponent<Rigidbody>().AddForce(forceToAdd, ForceMode.Acceleration);
                     }
 
                 }
@@ -68,13 +75,13 @@ public class BlackholeBomb : Bomb
                 Destroy(gameObject);
             }
 
-        }
 
+        }
         base.Update();
     }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 }

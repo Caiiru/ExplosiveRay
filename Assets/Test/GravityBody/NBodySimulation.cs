@@ -36,10 +36,14 @@ public class NBodySimulation : MonoBehaviour
     public static Vector3 CalculateAcceleration(Vector3 point, GravityBody ignoreBody = null)
     {
         Vector3 acceleration = Vector3.zero;
+        if(ignoreBody.cantBeAtracted){
+            return acceleration;
+        }
         foreach (var body in Instance.bodies)
         {
-            if (body != ignoreBody && body.cantBeAtracted)
+            if (body != ignoreBody)
             {
+
                 if (point.sqrMagnitude < ((body.Position - point).normalized * body.gravityRadius).sqrMagnitude)
                 {
                     Debug.Log("is inside " + ignoreBody.bodyName);
@@ -54,9 +58,8 @@ public class NBodySimulation : MonoBehaviour
                 }
 
                 Debug.DrawRay(body.Position, body.velocity, Color.green);
-
-
             }
+
         }
         return acceleration;
     }

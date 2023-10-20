@@ -95,9 +95,11 @@ public class Projection : MonoBehaviour
     }
 
 
-    public void SimulateTrajectory(Bomb bomb, Vector3 pos, Vector3 velocity)
+    public void SimulateTrajectory(GameObject bomb, Vector3 pos, Vector3 velocity)
     {
         var ghostObj = Instantiate(bomb, pos, Quaternion.identity);
+        ghostObj.layer = LayerMask.NameToLayer("BombLayer");
+        ghostObj.tag = "Bomb";
         for (int i = 0; i < ghostObj.transform.childCount; i++)
         {
             var ghostChild = ghostObj.transform.GetChild(i);
@@ -106,15 +108,17 @@ public class Projection : MonoBehaviour
         }
         SceneManager.MoveGameObjectToScene(ghostObj.gameObject, _simulationScene);
 
-        ghostObj.Init(velocity, true);
-        ghostObj.isGhost=true;
+        ghostObj.GetComponent<Bomb>().Init(velocity, true);
+        ghostObj.GetComponent<Bomb>().isGhost=true;
 
         line.positionCount = _maxPhysicsFrameIterations;
         line.SetPosition(0, pos);
         for (int i = 1; i < _maxPhysicsFrameIterations; i++)
         { 
+
             _physicsScene.Simulate(Time.fixedDeltaTime);
-            line.SetPosition(i, ghostObj.transform.position);
+            line.SetPosition(i, ghostObj.GetComponent<Rigidbody>().position);
+            //line.SetPosition(i, NBombSimulation.Instance.CalculateGhostTrajectory(i,_maxPhysicsFrameIterations,ghostObj.GetComponent<Bomb>()));
         }
 
         Destroy(ghostObj.gameObject);

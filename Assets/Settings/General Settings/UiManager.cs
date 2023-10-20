@@ -35,7 +35,7 @@ public class UiManager : MonoBehaviour
     private int bombIndex;
     void Start()
     {
-        
+        transform.GetChild(0).transform.gameObject.SetActive(true);
     }
 
     // Update is called once per frame

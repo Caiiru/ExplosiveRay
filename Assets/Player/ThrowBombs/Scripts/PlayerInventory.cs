@@ -20,7 +20,7 @@ public class PlayerInventory : MonoBehaviour
 
     #endregion
     public GameObject[] bombs;
-    public Bomb currentBomb;
+    public GameObject currentBomb;
     [SerializeField] int currentBombIndex = 0;
     private void Awake() {
         if(instance == null) {
@@ -33,8 +33,8 @@ public class PlayerInventory : MonoBehaviour
     }
     private void Start()
     { 
-        currentBomb = bombs[currentBombIndex].GetComponent<Bomb>();
-        UiManager.getInstance().changeBombImage(currentBomb.bombSprite);
+        currentBomb = bombs[currentBombIndex];
+        UiManager.getInstance().changeBombImage(currentBomb.GetComponent<Bomb>().bombSprite);
 
     }
     private void Update() {
@@ -55,13 +55,13 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    public Bomb GetCurrentBomb(){
+    public GameObject GetCurrentBomb(){
         return currentBomb;
     }
 
     public void ChangeCurrentBomb(){
-        currentBomb = bombs[currentBombIndex].GetComponent<Bomb>();
-        UiManager.getInstance().changeBombImage(currentBomb.bombSprite);
+        currentBomb = bombs[currentBombIndex];
+        UiManager.getInstance().changeBombImage(currentBomb.GetComponent<Bomb>().bombSprite);
     }
      
 

@@ -3,46 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class OrbitDebugDisplay : MonoBehaviour
+public class Trajectory : MonoBehaviour
 {
     public int numSteps = 1000;
     public float timeStep = 0.1f;
     public bool usePhysicsTimeStep;
-    public bool relativeToBody;
-    public GravityBody centralBody;
     public float width = 100;
     public bool useThickLines;
     public Color pathColor;
-    [SerializeField] private VirtualBody[] virtualBodies;
+    public Transform startPos;
+    void Start()
+    {
 
-    public bool showTrajectory;
+    }
+
 
     void DrawTrajectory()
     {
-        GravityBody[] bodies = FindObjectsOfType<GravityBody>();
-        virtualBodies = new VirtualBody[bodies.Length];
+        gravityBomb[] bodies = FindObjectsOfType<gravityBomb>();
+        var virtualBodies = new VirtualBody[bodies.Length];
         var drawPoints = new Vector3[bodies.Length][];
-        int referenceFrameIndex = 0;
-
-        Vector3 referenceBodyInitialPosition = Vector3.zero;
 
         for (int i = 0; i < virtualBodies.Length; i++)
         {
             virtualBodies[i] = new VirtualBody(bodies[i]);
             drawPoints[i] = new Vector3[numSteps];
 
-            if (bodies[i] == centralBody && relativeToBody)
-            {
-                referenceFrameIndex = i;
-                referenceBodyInitialPosition = virtualBodies[i].position;
-            }
-        }
-
-        //Simulate
+        } //Simulate
 
         for (int step = 0; step < numSteps; step++)
         {
-            Vector3 referenceBodyPosition = relativeToBody ? virtualBodies[referenceFrameIndex].position : Vector3.zero;
 
             for (int i = 0; i < virtualBodies.Length; i++)
             {
@@ -54,27 +44,20 @@ public class OrbitDebugDisplay : MonoBehaviour
             {
                 Vector3 newPos = virtualBodies[i].position + virtualBodies[i].velocity * timeStep;
                 virtualBodies[i].position = newPos;
-                if (relativeToBody)
-                {
-                    var referenceFrameOffset = referenceBodyPosition - referenceBodyInitialPosition;
-                    newPos -= referenceFrameOffset;
-                }
-                if (relativeToBody && i == referenceFrameIndex)
-                {
-                    newPos = referenceBodyInitialPosition;
-                }
                 drawPoints[i][step] = newPos;
             }
         }
 
-        // draw paths
+
+        //draw paths 
+
 
         for (int bodyIndex = 0; bodyIndex < virtualBodies.Length; bodyIndex++)
         {
-            pathColor = bodies[bodyIndex].transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().sharedMaterial.color;
             if (useThickLines)
             {
-                var lineRenderer = bodies[bodyIndex].gameObject.GetComponentInChildren<LineRenderer>();
+                //var lineRenderer = bodies[bodyIndex].gameObject.GetComponentInChildren<LineRenderer>();
+                var lineRenderer = startPos.GetComponent<LineRenderer>();
                 lineRenderer.enabled = true;
                 lineRenderer.positionCount = drawPoints[bodyIndex].Length;
                 lineRenderer.SetPositions(drawPoints[bodyIndex]);
@@ -86,7 +69,12 @@ public class OrbitDebugDisplay : MonoBehaviour
             {
                 for (int i = 0; i < drawPoints[bodyIndex].Length - 1; i++)
                 {
-                    Debug.DrawLine(drawPoints[bodyIndex][i], drawPoints[bodyIndex][i + 1], pathColor);
+                    if (i == 0)
+                    {
+                        Debug.DrawLine(startPos.position, drawPoints[bodyIndex][i + 1], pathColor);
+                    }
+                    else
+                        Debug.DrawLine(drawPoints[bodyIndex][i], drawPoints[bodyIndex][i + 1], pathColor);
                 }
 
                 var lineRenderer = bodies[bodyIndex].gameObject.GetComponentInChildren<LineRenderer>();
@@ -97,11 +85,10 @@ public class OrbitDebugDisplay : MonoBehaviour
             }
         }
     }
-
     Vector3 CalculateAcceleration(int i, VirtualBody[] virtualBodies)
     {
         Vector3 acceleration = Vector3.zero;
-        if(virtualBodies[i].cantBeAtracted) return acceleration;
+        if (virtualBodies[i].cantBeAtracted) return acceleration;
         for (int j = 0; j < virtualBodies.Length; j++)
         {
             if (i == j)
@@ -124,7 +111,6 @@ public class OrbitDebugDisplay : MonoBehaviour
         }
         return acceleration;
     }
-
     private void OnValidate()
     {
         if (usePhysicsTimeStep)
@@ -139,6 +125,7 @@ public class OrbitDebugDisplay : MonoBehaviour
             DrawTrajectory();
         }
     }
+
     class VirtualBody
     {
         public Vector3 position;
@@ -147,14 +134,12 @@ public class OrbitDebugDisplay : MonoBehaviour
         public float gravityRadius;
         public bool cantBeAtracted;
 
-        public VirtualBody(GravityBody body)
+        public VirtualBody(gravityBomb body)
         {
             position = body.transform.position;
-            velocity = body.initialVelocity;
-            mass = body.mass;
+            velocity = body.velocity;
             cantBeAtracted = body.cantBeAtracted;
-            gravityRadius = body.gravityRadius;
+            gravityRadius = body.radius;
         }
     }
-
 }
