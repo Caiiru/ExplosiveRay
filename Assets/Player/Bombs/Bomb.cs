@@ -10,10 +10,14 @@ public abstract class Bomb : MonoBehaviour
     public bool _isActivated;
     private GameObject bombHolder;
     public bool isGhost = false;
+    public bool isOnContact = false;
 
     public Sprite bombSprite;
-    public virtual void Init(Vector3 velocity, bool isSimulated)
+    public virtual void Init(Vector3 velocity, bool isSimulated, int InitialTimer)
     {
+        _timerUntilExplodes = InitialTimer;
+        if(InitialTimer == 0)
+            isOnContact = true;
         this.gameObject.layer = LayerMask.NameToLayer("BombLayer"); 
         bombHolder = transform.GetChild(0).gameObject;
         _rb = GetComponent<Rigidbody>();
@@ -29,13 +33,25 @@ public abstract class Bomb : MonoBehaviour
     {
         if (transform.position.y < -10)
         {
-            _rb.isKinematic = true;
+            Destroy(gameObject);
 
         }
-        if(_isActivated){
+        if(_isActivated && !isOnContact){
             _timerUntilExplodes -=1f*Time.deltaTime;
             if(_timerUntilExplodes <=0 ){
                 Explode();
+            }
+        }
+        else if(_isActivated && isOnContact){
+            Collider[] miniCollider;
+            miniCollider = Physics.OverlapSphere(transform.position,0.5f); 
+            if(miniCollider.Length!=0){
+                foreach(Collider col in miniCollider){
+                    if(col.CompareTag("Enemy") || col.CompareTag("Environment")){
+                        
+                        Explode();
+                    }
+                }
             }
         }
        

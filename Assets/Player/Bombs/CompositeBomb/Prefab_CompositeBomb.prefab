@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1941111038581676297}
   - component: {fileID: 6530389326542833724}
   - component: {fileID: 1376457546415237678}
-  m_Layer: 0
-  m_Name: BlackholeBomb
+  m_Layer: 6
+  m_Name: Composite Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,9 +114,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8147727771290187605}
-  - component: {fileID: 1785463368397013336}
+  - component: {fileID: 3008329147920524663}
   - component: {fileID: 4437827137547254884}
-  m_Layer: 0
+  - component: {fileID: 4692842115406325881}
+  m_Layer: 6
   m_Name: Prefab_CompositeBomb
   m_TagString: Bomb
   m_Icon: {fileID: 0}
@@ -139,7 +140,7 @@ Transform:
   - {fileID: 6888552837021091641}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1785463368397013336
+--- !u!114 &3008329147920524663
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -148,16 +149,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 9011431879108117438}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47dac7226faca3f449abe05c95d40a41, type: 3}
+  m_Script: {fileID: 11500000, guid: 09958cb6438db3a45bbec51ef062e268, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timerUntilExplodes: 4
+  _rb: {fileID: 0}
+  _timerUntilExplodes: 1.5
   _isActivated: 0
+  isGhost: 0
+  isOnContact: 0
   bombSprite: {fileID: 21300000, guid: 47443935b2f7bf346b68ffef30772249, type: 3}
-  range: 5
-  duration: 10
-  isActive: 0
-  colliders: []
+  expansionNumber: 3
+  timeToSecondExplosion: 1
+  littleActive: 0
+  range: 2.33
+  bombStregth: 64.3
+  bombDamage: 1
 --- !u!54 &4437827137547254884
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -166,7 +172,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9011431879108117438}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 200
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -185,3 +191,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 8
   m_CollisionDetection: 0
+--- !u!135 &4692842115406325881
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9011431879108117438}
+  m_Material: {fileID: 13400000, guid: 0ce90b899e0d2fe45a8b0bb1b06ac374, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.74
+  m_Center: {x: 0, y: 0, z: 0}

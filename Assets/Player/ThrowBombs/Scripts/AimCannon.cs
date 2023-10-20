@@ -11,11 +11,12 @@ public enum cannonStatus
     Aiming,
     Firing
 }
+
+
 public class AimCannon : MonoBehaviour
 {
-    public cannonStatus currentStatus = cannonStatus.Idle; 
+    public cannonStatus currentStatus = cannonStatus.Idle;
     #region Cannon Settings
-    Vector3 throwVector;
     Vector3 mousePos;
     public Slider slider;
 
@@ -27,19 +28,27 @@ public class AimCannon : MonoBehaviour
     //The pivot for the barrel
     public Transform barrelPivot;
 
+    public int[] possibleTimers;
+    public int currentTimerIndex = 0;
+
     [Range(10, 50)] public int rotationSpeed = 10;
     public float force;
-    private float minForce = 3;
-    private float maxForce = 20; 
+    private float minForce = 500;
+    private float maxForce = 2500;
 
     #endregion
-
-    [SerializeField] private Projection _projection;
-    public Transform targetTransform;
+    private Projection _projection;
     void Start()
-    { 
+    {
         slider.minValue = minForce;
         slider.maxValue = maxForce;
+        possibleTimers = new int[5];
+        _projection = GetComponent<Projection>();
+        for (int i = 0; i < 5; i++)
+        {
+            possibleTimers[i] = i;
+        }
+        UiManager.getInstance().changeCurrentTimer(possibleTimers[currentTimerIndex]);
     }
 
     // Update is called once per frame
@@ -60,38 +69,37 @@ public class AimCannon : MonoBehaviour
     {
         if (currentStatus == cannonStatus.Aiming)
         {
-            float newForce = force; 
+            float newForce = force;
             slider.value = force;
             if (force >= minForce && force <= maxForce)
             {
-                newForce += Input.mouseScrollDelta.y*1.3f; 
-                force = newForce<minForce?minForce:newForce>maxForce?maxForce:newForce;
-            } 
-            
+                newForce += Input.mouseScrollDelta.y * 100;
+                force = newForce < minForce ? minForce : newForce > maxForce ? maxForce : newForce;
+            }
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hitinfo, float.MaxValue, projectionLayer))
             {
                 mousePos = new Vector3(hitinfo.point.x, hitinfo.point.y, 0);
                 Debug.DrawRay(cannonPoint.transform.position, mousePos, Color.red, 0.1f, false);
-                
+
             }
-            _projection.SimulateTrajectory(PlayerInventory.getInstance().GetCurrentBomb(), cannonPoint.transform.position, cannonPoint.forward * force);
+            _projection.SimulateTrajectory(PlayerInventory.getInstance().GetCurrentBomb(), cannonPoint.transform.position, cannonPoint.forward * force, 2);
         }
     }
     void ThrowBomb()
     {
         var throwedBomb = Instantiate(PlayerInventory.getInstance().GetCurrentBomb(), cannonPoint.position, quaternion.identity);
-        throwedBomb.GetComponent<Bomb>().Init(cannonPoint.forward * force, false);
+        throwedBomb.GetComponent<Bomb>().Init(cannonPoint.forward * force, false, possibleTimers[currentTimerIndex]);
     }
     void CheckStatus()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            print("mouse click");
             switch (currentStatus)
             {
                 case cannonStatus.Idle:
-                    changeStatus(cannonStatus.Aiming); 
+                    changeStatus(cannonStatus.Aiming);
                     break;
                 case cannonStatus.Aiming:
                     changeStatus(cannonStatus.Firing);
@@ -100,9 +108,20 @@ public class AimCannon : MonoBehaviour
                     changeStatus(cannonStatus.Idle);
                     break;
             }
+
+
+        }
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            currentTimerIndex = currentTimerIndex + 1 > possibleTimers[possibleTimers[possibleTimers.Length-1]] ? possibleTimers[0] : currentTimerIndex + 1;
+            UiManager.getInstance().changeCurrentTimer(possibleTimers[currentTimerIndex]);
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            currentTimerIndex = currentTimerIndex - 1 < possibleTimers[0] ? possibleTimers[possibleTimers[possibleTimers.Length-1]] : currentTimerIndex - 1;
+            UiManager.getInstance().changeCurrentTimer(possibleTimers[currentTimerIndex]);
         }
     }
-
     void changeStatus(cannonStatus status)
     {
         if (currentStatus != status)
@@ -127,9 +146,10 @@ public class AimCannon : MonoBehaviour
         }
     }
 
-    public void changeForce(float value){
-        value = value<=minForce?minForce:value;
-        value = value>=maxForce?maxForce:value;
+    public void changeForce(float value)
+    {
+        value = value <= minForce ? minForce : value;
+        value = value >= maxForce ? maxForce : value;
 
         force = value;
     }

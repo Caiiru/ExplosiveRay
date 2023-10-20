@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -33,7 +32,8 @@ public class WorldText : MonoBehaviour
         return instance;
 
     }
-    private void Awake() {
+    private void Awake()
+    {
         instance = this;
     }
 
@@ -55,13 +55,13 @@ public class WorldText : MonoBehaviour
             case textFontSize.Big:
                 textCreated.fontSize = 8;
                 break;
-        } 
+        }
         textCreated.transform.SetParent(currentCanvas.transform);
         textCreated.text = initialText;
         textCreated.alignment = TextAlignmentOptions.Center;
         textCreated.alignment = TextAlignmentOptions.Midline;
         textCreated.transform.position = pos;
- 
+
         for (int i = 0; i < worldTexts.Length; i++)
         {
             if (worldTexts[i] == null)
@@ -112,11 +112,16 @@ public class WorldText : MonoBehaviour
     {
         worldTexts[textIndex].text = text;
     }
+    public void UpdateText(int textIndex, String text, Vector3 position)
+    {
+        var obj = worldTexts[textIndex];
+        obj.transform.position = new Vector3(position.x,position.y+1f);
+        worldTexts[textIndex].text = text;
+    }
     public void DeleteText(int textIndex)
     {
-        worldTexts[textIndex].enabled = false;
-        worldTexts[textIndex] = null;
+        Destroy(worldTexts[textIndex].gameObject);
     }
 
-    
+
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1941111038581676297}
   - component: {fileID: 6530389326542833724}
   - component: {fileID: 1376457546415237678}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BlackholeBomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,9 +117,9 @@ GameObject:
   - component: {fileID: 1785463368397013336}
   - component: {fileID: 4437827137547254884}
   - component: {fileID: 2390277154218275251}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Prefab_BlackholeBomb
-  m_TagString: Untagged
+  m_TagString: Bomb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,14 +152,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47dac7226faca3f449abe05c95d40a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rb: {fileID: 0}
   _timerUntilExplodes: 4
   _isActivated: 0
+  isGhost: 0
+  isOnContact: 0
   bombSprite: {fileID: 21300000, guid: 93b6588093a6d9f47b68afe76e91521b, type: 3}
-  range: 5
-  duration: 10
-  bombStregth: 0
+  radius: 4
+  duration: 15
+  bombStregth: 5
   isActive: 0
   colliders: []
+  bombLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  currentScene:
+    m_Handle: 0
+  textIndex: 0
+  objective: {fileID: 0}
 --- !u!54 &4437827137547254884
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -168,7 +178,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9011431879108117438}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 250
   m_Drag: 0
   m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}

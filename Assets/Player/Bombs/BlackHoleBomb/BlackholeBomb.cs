@@ -7,11 +7,13 @@ public class BlackholeBomb : Bomb
 {
     public int radius = 5;
     public float duration = 10;
-    [Range(0.1f, 1f)] public float bombStregth;
+    [Range(0.1f, 5f)] public float bombStregth;
     public bool isActive = false;
     public Collider[] colliders;
     [SerializeField] LayerMask bombLayer;
     public Scene currentScene;
+    public int textIndex;
+
     public override void Explode()
     {
         isActive = true;
@@ -32,33 +34,45 @@ public class BlackholeBomb : Bomb
         }
         var ghostBlackHole = ghostBomb.GetComponent<BlackholeBomb>();
         ghostBlackHole.duration = duration;
+        ghostBlackHole.tag = "Bomb";
+        ghostBlackHole.isGhost = true;
         ghostBlackHole.isActive = true;
         ghostBlackHole._isActivated = false;
         SceneManager.MoveGameObjectToScene(ghostBomb, simulationScene);
         base.Explode();
     }
-    public override void Init(Vector3 velocity, bool isSimulated)
+    public override void Init(Vector3 velocity, bool isSimulated, int InitialTimer)
     {
-        base.Init(velocity, isSimulated);
+        base.Init(velocity, isSimulated, InitialTimer);
         bombLayer = LayerMask.NameToLayer("BombLayer");
+        if (isSimulated == false)
+            textIndex = WorldText.getInstance().createWorldText(transform.position, _timerUntilExplodes.ToString("F1"), textFontSize.Small);
+
     }
     public override void Update()
     {
+        if (_isActivated)
+        {
+            if (isOnContact)
+                WorldText.getInstance().UpdateText(textIndex, "!!",transform.position);
+            else
+                WorldText.getInstance().UpdateText(textIndex, _timerUntilExplodes.ToString("F1"),transform.position);
+        }
         if (isActive)
         {
             if (duration >= 0)
             {
+                WorldText.getInstance().UpdateText(textIndex, duration.ToString("F1"), transform.position);
                 currentScene = gameObject.scene;
                 colliders = Physics.OverlapSphere(transform.position, radius, bombLayer);
                 foreach (Collider obj in colliders)
                 {
                     Vector3 forceToAdd = (transform.position - obj.transform.position) * bombStregth;
-                    /*
+
                     if (obj.CompareTag("Enemy") || obj.CompareTag("Bomb") && obj != this)
                     {
-                        obj.transform.position += (this.transform.position - obj.transform.position) * bombStregth;
+                        obj.transform.position += (this.transform.position - obj.transform.position) * bombStregth / 2;
                     }
-                    */
                     Debug.Log(obj.gameObject.name);
                     if (obj.CompareTag("Bomb"))
                     {
@@ -71,6 +85,8 @@ public class BlackholeBomb : Bomb
             }
             else
             {
+                if (!isGhost)
+                    WorldText.getInstance().DeleteText(textIndex);
                 isActive = false;
                 Destroy(gameObject);
             }
@@ -79,9 +95,36 @@ public class BlackholeBomb : Bomb
         }
         base.Update();
     }
+    public Transform objective;
+    public Vector3 CalculateForceAboveOther(Vector3 currentOtherPosition, float step)
+    {
+        Vector3 acceleration = Vector3.zero;
+        if (this.isActive)
+        {/* 
+            Debug.Log("Other Position: " + currentOtherPosition + " sqr: " + currentOtherPosition.sqrMagnitude);
+            Debug.Log("Objective " + ((transform.position - currentOtherPosition).normalized * radius).sqrMagnitude); */
+            Vector3 direction = currentOtherPosition - transform.position;
+            if (direction.magnitude > radius)
+            {
+                direction = (direction.normalized * radius);
+
+
+                if (direction.magnitude < radius)
+                {
+                    Debug.DrawLine(transform.position, transform.position + direction);
+                    acceleration += ((transform.position - currentOtherPosition).normalized * bombStregth) * Time.deltaTime;
+
+                }
+            }
+
+
+        }
+        return acceleration;
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, radius);
+
     }
 }

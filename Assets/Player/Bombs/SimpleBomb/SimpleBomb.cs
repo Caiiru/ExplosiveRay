@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class SimpleBomb : Bomb
 {
-    [SerializeField][Range(1, 3)] int bombDamage = 1;
-    [SerializeField][Range(3, 30)] int bombStregth = 6;
+    [SerializeField][Range(1, 3)] int bombDamage = 2;
+    [SerializeField][Range(3, 100)] int bombStregth = 6;
     [SerializeField][Range(1, 6)] int bombRange = 3;
 
     public Collider[] colliders;
@@ -16,12 +16,15 @@ public class SimpleBomb : Bomb
     private void Start()
     {
     }
-    public override void Init(Vector3 velocity, bool isSimulated)
+    public override void Init(Vector3 velocity, bool isSimulated, int InitialTimer)
     {
-        base.Init(velocity, isSimulated);
+        base.Init(velocity, isSimulated, InitialTimer);
         if (isSimulated == false)
         {
-            bombTextIndex = WorldText.instance.createWorldText(Vector3.zero, "2", textFontSize.Small);
+            if (isOnContact)
+                bombTextIndex = WorldText.instance.createWorldText(Vector3.zero, "!!", textFontSize.Small);
+            else
+                bombTextIndex = WorldText.instance.createWorldText(Vector3.zero, "2", textFontSize.Small);
         }
         colliders = new Collider[10];
     }
@@ -34,7 +37,12 @@ public class SimpleBomb : Bomb
         if (_isActivated && !isGhost)
         {
             WorldText.getInstance().UpdateTextsPositions(bombTextIndex, new Vector3(transform.position.x, transform.position.y + 1f));
-            WorldText.getInstance().UpdateText(bombTextIndex, _timerUntilExplodes.ToString("F1"));
+            
+            if (isOnContact) 
+                WorldText.getInstance().UpdateText(bombTextIndex, "!!");
+            else
+                WorldText.getInstance().UpdateText(bombTextIndex, _timerUntilExplodes.ToString("F1"));
+            
         }
     }
 
@@ -55,7 +63,7 @@ public class SimpleBomb : Bomb
                 obj.GetComponent<Unit>().TakeDamage(bombDamage, false);
             }
         }
-        if(!isGhost)
+        if (!isGhost)
             WorldText.getInstance().DeleteText(bombTextIndex);
 
         transform.position = new Vector3(0, -50, 0);

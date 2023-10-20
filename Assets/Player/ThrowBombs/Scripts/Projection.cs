@@ -95,7 +95,7 @@ public class Projection : MonoBehaviour
     }
 
 
-    public void SimulateTrajectory(GameObject bomb, Vector3 pos, Vector3 velocity)
+    public void SimulateTrajectory(GameObject bomb, Vector3 pos, Vector3 velocity, int initialTimer)
     {
         var ghostObj = Instantiate(bomb, pos, Quaternion.identity);
         ghostObj.layer = LayerMask.NameToLayer("BombLayer");
@@ -108,16 +108,33 @@ public class Projection : MonoBehaviour
         }
         SceneManager.MoveGameObjectToScene(ghostObj.gameObject, _simulationScene);
 
-        ghostObj.GetComponent<Bomb>().Init(velocity, true);
-        ghostObj.GetComponent<Bomb>().isGhost=true;
+        ghostObj.GetComponent<Bomb>().Init(velocity, true,initialTimer);
+        ghostObj.GetComponent<Bomb>().isGhost = true;
 
         line.positionCount = _maxPhysicsFrameIterations;
         line.SetPosition(0, pos);
+        var denseGravityBodies = FindObjectsOfType<BlackholeBomb>();
+
         for (int i = 1; i < _maxPhysicsFrameIterations; i++)
-        { 
+        {
+            /* var ghostPosition = ghostObj.GetComponent<Rigidbody>().position;
+            if (denseGravityBodies != null)
+            {
+                foreach (var obj in denseGravityBodies)
+                {
+                    if (obj.isActive)
+                    {
+                        var acceleration = Vector3.zero;
+                        acceleration += obj.CalculateForceAboveOther(ghostPosition, _maxPhysicsFrameIterations);
+                        ghostObj.GetComponent<Rigidbody>().AddForce(acceleration,ForceMode.Acceleration);
+                    }
+                }
+            } */
+
 
             _physicsScene.Simulate(Time.fixedDeltaTime);
-            line.SetPosition(i, ghostObj.GetComponent<Rigidbody>().position);
+
+            line.SetPosition(i, ghostObj.transform.position);
             //line.SetPosition(i, NBombSimulation.Instance.CalculateGhostTrajectory(i,_maxPhysicsFrameIterations,ghostObj.GetComponent<Bomb>()));
         }
 
